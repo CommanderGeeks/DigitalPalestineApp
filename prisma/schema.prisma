@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// ===  Core identity  =======================================================
+model User {
+  id                String        @id @default(uuid())
+  email             String?       @unique
+  wallet            String?       @unique
+  passportType      PassportType  @default(PERSONAL)
+  isPalestinian     Boolean
+  regionId          String?       // FK -> Region
+  townCity          String?       // free-text town
+  volunteer         Boolean       @default(false)
+  connectToOrigin   Boolean       @default(false)
+  name              String        // Digital Passport Name
+
+  // Branching groups
+  businessInfo      BusinessInfo?  @relation(fields: [businessInfoId], references: [id])
+  businessInfoId    String?
+  institutionInfo   InstitutionInfo? @relation(fields: [institutionInfoId], references: [id])
+  institutionInfoId String?
+  developerInfo     DeveloperInfo? @relation(fields: [developerInfoId], references: [id])
+  developerInfoId   String?
+
+  profile           Profile?
+  roles             UserRole[]
+  committeeInterests CommitteeInterest[]
+  createdAt         DateTime      @default(now())
+  
+  // Volunteer fields
+  joinSubCommittee  Boolean       @default(false)
+  volunteerSkills   String[]      @default([])
+  additionalContributions String?
+  
+  // Community engagement
+  participateInSurveys Boolean    @default(false)
+  earlyAccessTesting  Boolean     @default(false)
+  joinCommunityEvents Boolean     @default(false)
+  connectWithOthers   Boolean     @default(false)
+  contributeIdeas     Boolean     @default(false)
+  
+  // Feedback fields
+  hopesForDigitalPalestine String?
+  supportNeeds            String?
+  desiredFeatures         String?
+
+  region            Region?       @relation(fields: [regionId], references: [id])
+}
+
+model Profile {
+  id            String   @id @default(uuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String   @unique
+  fullName      String?
+  nationality   String?
+  countryOfResidence String?
+  cityOfResidence   String?
+  dateOfBirth   String?
+  gender        String?
+  profession    String?  // auto-complete list or "Other"
+  areasOfExpertise String?
+  skillsOrHobbies  String?
+  primaryInterests String?
+  interestedInGovernance Boolean @default(false)
+  skills        String[] @default([])  // for committee filter
+}
+
+model Region {
+  id      String  @id
+  name    String  @unique       // "Gaza", "Jaffa", …
+  towns   Town[]
+  users   User[]
+}
+
+model Town {
+  id        String   @id @default(uuid())
+  name      String
+  region    Region   @relation(fields:[regionId], references:[id])
+  regionId  String
+  @@unique([name, regionId])
+}
+
+// Branch-specific tables  ----------------------------------------------------
+model BusinessInfo {
+  id            String @id @default(uuid())
+  companyName   String
+  sector        String?
+  website       String?
+  country       String?
+  city          String?
+  employeeCount String?
+  goals         String?
+  challenges    String?
+  interestedInGovernance Boolean @default(false)
+  users         User[]
+}
+
+model InstitutionInfo {
+  id            String @id @default(uuid())
+  orgName       String
+  orgType       String
+  website       String?
+  country       String?
+  city          String?
+  memberCount   String?
+  areaOfFocus   String?
+  goals         String?
+  partnerships  String?
+  services      String?
+  category      String?
+  users         User[]
+}
+
+model DeveloperInfo {
+  id                String @id @default(uuid())
+  nationality       String?
+  country           String?
+  city              String?
+  expertise         String?
+  yearsExperience   String?
+  primaryFocus      String?
+  stack             String[] @default([])
+  github            String?
+  interestedInGrants Boolean @default(false)
+  interestedInGovernance Boolean @default(false)
+  joinDeveloperNetwork Boolean @default(false)
+  workingModality   String?
+  users             User[]
+}
+
+//  Volunteer / Committee  ----------------------------------------------------
+model CommitteeInterest {
+  id          String @id @default(uuid())
+  user        User   @relation(fields:[userId], references:[id])
+  userId      String
+  committee   String   // e.g. "Education", "Tech", "Advocacy"
+  skillMatch  Int?      // calc later
+}
+
+enum PassportType {
+  PERSONAL
+  BUSINESS
+  INSTITUTION
+  DEVELOPER
+}
+
+model UserRole {
+  id       String   @id @default(uuid())
+  role     String   // "admin", "moderator", "editor"
+  user     User?    @relation(fields: [userId], references: [id])
+  userId   String?
+}
