@@ -1,12 +1,34 @@
+// Path: app/page.tsx
+
 "use client"
 
 import { useState } from "react"
 import PalestineHistoricMap from "@/components/palestine-historic-map"
 import { Button } from "@/components/ui/button"
-import RegisterForm from "@/components/register-form"
+import { RegisterForm } from "@/components/register-form"
+import { PassportSelection } from "@/components/passport-selection"
 
 export default function Home() {
+  const [passportSelectionOpen, setPassportSelectionOpen] = useState(false)
   const [registerOpen, setRegisterOpen] = useState(false)
+  const [selectedPassportType, setSelectedPassportType] = useState("")
+
+  const handlePassportSelect = (type: string) => {
+    setSelectedPassportType(type)
+    setPassportSelectionOpen(false)
+    // Small delay to allow the selection dialog to close smoothly
+    setTimeout(() => {
+      setRegisterOpen(true)
+    }, 200)
+  }
+
+  const handleRegisterClose = (open: boolean) => {
+    setRegisterOpen(open)
+    if (!open) {
+      // Reset the selected type when closing the form
+      setSelectedPassportType("")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -32,14 +54,25 @@ export default function Home() {
           <Button
             size="lg"
             className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-xl font-bold rounded-md"
-            onClick={() => setRegisterOpen(true)}
+            onClick={() => setPassportSelectionOpen(true)}
           >
             Register
           </Button>
         </div>
 
+        {/* Passport Selection Dialog */}
+        <PassportSelection 
+          open={passportSelectionOpen} 
+          onOpenChange={setPassportSelectionOpen}
+          onSelectType={handlePassportSelect}
+        />
+
         {/* Registration Form Dialog */}
-        <RegisterForm open={registerOpen} onOpenChange={setRegisterOpen} />
+        <RegisterForm 
+          open={registerOpen} 
+          onOpenChange={handleRegisterClose}
+          preselectedType={selectedPassportType}
+        />
       </div>
     </div>
   )
