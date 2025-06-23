@@ -176,36 +176,6 @@ export default function PalestineHistoricMap() {
           onClick={() => setActive("beersheba")}
         />
       </svg>
-
-      {/* === SIDE PANEL =================================================== */}
-      <aside
-        className={clsx(
-          "fixed right-0 top-0 h-full w-80 max-w-[90%] bg-white shadow-2xl z-50",
-          "transform transition-transform duration-300 ease-in-out",
-          active ? "translate-x-0" : "translate-x-full",
-        )}
-      >
-        {active && (
-          <div className="p-6 leading-relaxed">
-            <button
-              onClick={() => setActive(null)}
-              className="float-right text-xl font-bold text-gray-400 hover:text-gray-600"
-              aria-label="Close panel"
-            >
-              ×
-            </button>
-            <h2 className="text-2xl font-semibold text-emerald-700 mb-2">{REGIONS[active].title}</h2>
-            <p className="text-sm text-gray-700 mb-4">{REGIONS[active].blurb}</p>
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h3 className="text-lg font-medium text-emerald-800 mb-2">Our Heritage</h3>
-              <p className="text-sm text-gray-600">
-                This historic region is an integral part of Palestine's cultural and historical landscape, with deep
-                roots that span generations.
-              </p>
-            </div>
-          </div>
-        )}
-      </aside>
     </div>
   )
 }
