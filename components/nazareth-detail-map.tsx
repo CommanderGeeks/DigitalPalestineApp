@@ -61,19 +61,28 @@ export default function NazarethDetailMap({ isOpen, onClose }: NazarethDetailMap
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
 
   const handleVillageHover = (villageId: string | null, event?: React.MouseEvent) => {
-    setHoveredVillage(villageId)
+  setHoveredVillage(villageId)
+  
+  if (villageId && event && VILLAGE_DATA[villageId]) {
+    // Get the modal container position
+    const modalElement = event.currentTarget.closest('.fixed')
+    const modalRect = modalElement?.getBoundingClientRect()
     
-    if (villageId && event && VILLAGE_DATA[villageId]) {
-      const rect = event.currentTarget.getBoundingClientRect()
+    if (modalRect) {
+      // Position relative to the modal, not the entire window
+      const relativeX = event.clientX - modalRect.left
+      const relativeY = event.clientY - modalRect.top
+      
       setTooltip({
         village: VILLAGE_DATA[villageId],
-        x: event.clientX,
-        y: event.clientY
+        x: relativeX + 15, // 15px to the right within the modal
+        y: relativeY - 10  // 10px above within the modal
       })
-    } else {
-      setTooltip(null)
     }
+  } else {
+    setTooltip(null)
   }
+}
 
   if (!isOpen) return null
 
@@ -183,14 +192,14 @@ export default function NazarethDetailMap({ isOpen, onClose }: NazarethDetailMap
       </div>
 
       {/* Tooltip */}
-      {tooltip && (
+        {tooltip && (
         <div 
-          className="fixed z-60 bg-white border-2 border-green-600 rounded-lg shadow-xl p-4 pointer-events-none max-w-xs"
-          style={{ 
-            left: `${tooltip.x + 10}px`, 
-            top: `${tooltip.y - 10}px`,
+            className="absolute z-60 bg-white border-2 border-green-600 rounded-lg shadow-xl p-4 pointer-events-none max-w-xs"
+            style={{ 
+            left: `${tooltip.x}px`, 
+            top: `${tooltip.y}px`,
             transform: 'translateY(-100%)'
-          }}
+            }}
         >
           <div className="space-y-2">
             <h4 className="font-bold text-green-800 text-lg">{tooltip.village.name}</h4>
