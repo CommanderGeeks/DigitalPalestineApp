@@ -49,10 +49,31 @@ const REGIONS: Record<RegionKey, RegionMeta> = {
 export default function PalestineHistoricMap() {
   const [hoveredRegion, setHoveredRegion] = useState<RegionKey | null>(null)
   const [nazarethDetailOpen, setNazarethDetailOpen] = useState(false)
+  const [tooltip, setTooltip] = useState<{ region: RegionMeta, x: number, y: number } | null>(null)
 
-  const handleRegionHover = (regionKey: RegionKey | null) => {
-    setHoveredRegion(regionKey)
+  const handleRegionHover = (regionKey: RegionKey | null, event?: React.MouseEvent) => {
+  setHoveredRegion(regionKey)
+  
+  if (regionKey && event && REGIONS[regionKey]) {
+    // Get the map container position
+    const mapContainer = event.currentTarget.closest('.relative')
+    const containerRect = mapContainer?.getBoundingClientRect()
+    
+    if (containerRect) {
+      // Position relative to the map container
+      const relativeX = event.clientX - containerRect.left
+      const relativeY = event.clientY - containerRect.top
+      
+      setTooltip({
+        region: REGIONS[regionKey],
+        x: relativeX + 15, // 15px to the right within the container
+        y: relativeY - 10  // 10px above within the container
+      })
+    }
+  } else {
+    setTooltip(null)
   }
+}
 
   const handleRegionClick = (regionKey: RegionKey) => {
     console.log("Clicked region:", regionKey) 
@@ -93,7 +114,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("safad")}
           fill={getFillColor("safad")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("safad")}
+          onMouseEnter={(e) => handleRegionHover("safad", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("safad")}
         />
@@ -103,7 +124,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("acre")}
           fill={getFillColor("acre")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("acre")}
+          onMouseEnter={(e) => handleRegionHover("acre", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("acre")}
         />
@@ -113,7 +134,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("tiberias")}
           fill={getFillColor("tiberias")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("tiberias")}
+          onMouseEnter={(e) => handleRegionHover("tiberias", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("tiberias")}
         />
@@ -123,7 +144,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("haifa")}
           fill={getFillColor("haifa")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("haifa")}
+          onMouseEnter={(e) => handleRegionHover("haifa", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("haifa")}
         />
@@ -133,7 +154,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("nazareth")}
           fill={getFillColor("nazareth")}
           className="cursor-pointer transition-all duration-200 hover:stroke-2"
-          onMouseEnter={() => handleRegionHover("nazareth")}
+          onMouseEnter={(e) => handleRegionHover("nazareth", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("nazareth")}
         />
@@ -143,7 +164,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("baysan")}
           fill={getFillColor("baysan")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("baysan")}
+          onMouseEnter={(e) => handleRegionHover("baysan", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("baysan")}
         />
@@ -153,7 +174,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("jenin")}
           fill={getFillColor("jenin")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("jenin")}
+          onMouseEnter={(e) => handleRegionHover("jenin", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("jenin")}
         />
@@ -163,7 +184,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("tulkarm")}
           fill={getFillColor("tulkarm")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("tulkarm")}
+          onMouseEnter={(e) => handleRegionHover("tulkarm", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("tulkarm")}
         />
@@ -173,7 +194,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("jaffa")}
           fill={getFillColor("jaffa")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("jaffa")}
+          onMouseEnter={(e) => handleRegionHover("jaffa", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("jaffa")}
         />
@@ -183,7 +204,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("nablus")}
           fill={getFillColor("nablus")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("nablus")}
+          onMouseEnter={(e) => handleRegionHover("nablus", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("nablus")}
         />
@@ -193,7 +214,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("ramallah")}
           fill={getFillColor("ramallah")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("ramallah")}
+          onMouseEnter={(e) => handleRegionHover("ramallah", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("ramallah")}
         />
@@ -203,7 +224,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("alramla")}
           fill={getFillColor("alramla")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("alramla")}
+          onMouseEnter={(e) => handleRegionHover("alramla", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("alramla")}
         />
@@ -213,7 +234,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("jerusalem")}
           fill={getFillColor("jerusalem")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("jerusalem")}
+          onMouseEnter={(e) => handleRegionHover("jerusalem", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("jerusalem")}
         />
@@ -223,7 +244,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("gaza")}
           fill={getFillColor("gaza")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("gaza")}
+          onMouseEnter={(e) => handleRegionHover("gaza", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("gaza")}
         />
@@ -233,7 +254,7 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("hebron")}
           fill={getFillColor("hebron")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("hebron")}
+          onMouseEnter={(e) => handleRegionHover("hebron", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("hebron")}
         />
@@ -243,27 +264,36 @@ export default function PalestineHistoricMap() {
           stroke={getStrokeColor("beersheba")}
           fill={getFillColor("beersheba")}
           className="cursor-pointer transition-all duration-200"
-          onMouseEnter={() => handleRegionHover("beersheba")}
+          onMouseEnter={(e) => handleRegionHover("beersheba", e)}
           onMouseLeave={() => handleRegionHover(null)}
           onClick={() => handleRegionClick("beersheba")}
         />
           </g>
         </svg>
 
-        {/* Region Info Display */}
-        {hoveredRegion && (
-          <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-green-200">
-            <h3 className="font-bold text-green-800 text-lg">
-              {REGIONS[hoveredRegion]?.title}
-            </h3>
-            <p className="text-gray-700 text-sm mt-1">
-              {REGIONS[hoveredRegion]?.blurb}
-            </p>
-            {hoveredRegion === "nazareth" && (
-              <p className="text-green-600 text-xs mt-2 font-medium">
-                Click to explore Nazareth villages in detail
+        {/* Tooltip */}
+        {tooltip && (
+          <div 
+            className="absolute z-50 bg-white border-2 border-green-600 rounded-lg shadow-xl p-4 pointer-events-none max-w-xs"
+            style={{ 
+              left: `${tooltip.x}px`, 
+              top: `${tooltip.y}px`,
+              transform: 'translateY(-100%)'
+            }}
+          >
+            <div className="space-y-2">
+              <h4 className="font-bold text-green-800 text-lg">{tooltip.region.title}</h4>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                {tooltip.region.blurb}
               </p>
-            )}
+              {tooltip.region.title === "Nazareth" && (
+                <p className="text-green-600 text-xs mt-2 font-medium">
+                  Click to explore villages in detail
+                </p>
+              )}
+            </div>
+            {/* Tooltip Arrow */}
+            <div className="absolute top-full left-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-green-600"></div>
           </div>
         )}
       </div>
