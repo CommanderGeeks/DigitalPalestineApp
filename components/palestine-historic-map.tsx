@@ -84,7 +84,7 @@ export default function PalestineHistoricMap() {
   return (
     <>
       <div className="relative">
-        <svg width="100%" height="auto" viewBox="0 0 336 940" className="max-w-lg mx-auto">
+        <svg width="50%" height="auto" viewBox="0 0 336 940" className="max-w-lg mx-auto">
           <rect width="336" height="940" fill="transparent"/>
           <g id="PalestineMap">
             viewBox="0 0 336 940"
