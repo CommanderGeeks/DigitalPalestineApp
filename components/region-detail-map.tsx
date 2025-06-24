@@ -102,17 +102,33 @@ export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDe
           const cleanId = villageId.replace(/_2$/, '') // Remove _2 suffix if present
           const isHovered = hoveredVillage === cleanId
           
+          // Check if this is the main region boundary (large path, usually the region name)
+          const pathData = path.getAttribute('d') || ''
+          const isMainRegionBoundary = pathData.length > 100 // Main boundaries are typically very long paths
+          
+          // Only show interactivity for _2 versions (capitals) OR small village paths that exist in our data
+          const shouldShowInteractivity = (villageId.endsWith('_2') && villageData[cleanId]) || 
+                                        (!isMainRegionBoundary && villageData[cleanId])
+          
           return (
             <path
               key={index}
               id={villageId}
-              d={path.getAttribute('d') || ''}
+              d={pathData}
               stroke="black"
-              strokeWidth="1"
-              fill={isHovered ? "rgba(220, 38, 38, 0.6)" : "rgba(34, 197, 94, 0.4)"}
-              className="cursor-pointer transition-all duration-200 hover:stroke-2"
-              onMouseEnter={(e) => handleVillageHover(cleanId, e)}
-              onMouseLeave={() => handleVillageHover(null)}
+              strokeWidth={isMainRegionBoundary ? "2" : "1"}
+              fill={
+                isMainRegionBoundary 
+                  ? "transparent" 
+                  : shouldShowInteractivity && isHovered 
+                    ? "rgba(220, 38, 38, 0.6)" 
+                    : shouldShowInteractivity
+                      ? "rgba(34, 197, 94, 0.4)"
+                      : "rgba(34, 197, 94, 0.2)"
+              }
+              className={shouldShowInteractivity ? "cursor-pointer transition-all duration-200 hover:stroke-2" : ""}
+              onMouseEnter={shouldShowInteractivity ? (e) => handleVillageHover(cleanId, e) : undefined}
+              onMouseLeave={shouldShowInteractivity ? () => handleVillageHover(null) : undefined}
             />
           )
         })}
