@@ -2,30 +2,8 @@
 
 import { useState } from "react"
 import clsx from "clsx"
-import NazarethDetailMap from "./nazareth-detail-map"
-
-type RegionKey =
-  | "safad"
-  | "acre"
-  | "haifa"
-  | "tiberias"
-  | "nazareth"
-  | "baysan"
-  | "jenin"
-  | "nablus"
-  | "tulkarm"
-  | "jaffa"
-  | "alramla"
-  | "ramallah"
-  | "jerusalem"
-  | "gaza"
-  | "hebron"
-  | "beersheba"
-
-interface RegionMeta {
-  title: string
-  blurb: string
-}
+import RegionDetailMap from "./region-detail-map"
+import { RegionKey, RegionMeta } from "../data/types"
 
 const REGIONS: Record<RegionKey, RegionMeta> = {
   safad: { title: "Safad", blurb: "Hill-country district famed for mysticism & olives." },
@@ -46,10 +24,13 @@ const REGIONS: Record<RegionKey, RegionMeta> = {
   beersheba: { title: "Beersheba", blurb: "Negev hub—gateway to desert caravans." }
 }
 
+
+
 export default function PalestineHistoricMap() {
   const [hoveredRegion, setHoveredRegion] = useState<RegionKey | null>(null)
   const [nazarethDetailOpen, setNazarethDetailOpen] = useState(false)
   const [tooltip, setTooltip] = useState<{ region: RegionMeta, x: number, y: number } | null>(null)
+  const [activeDetailRegion, setActiveDetailRegion] = useState<RegionKey | null>(null)
 
   const handleRegionHover = (regionKey: RegionKey | null, event?: React.MouseEvent) => {
   setHoveredRegion(regionKey)
@@ -76,13 +57,13 @@ export default function PalestineHistoricMap() {
 }
 
   const handleRegionClick = (regionKey: RegionKey) => {
-    console.log("Clicked region:", regionKey) 
-      if (regionKey === "nazareth") {
-    console.log("Setting nazareth detail to true") 
-    console.log("🔥 Clicked:", regionKey) 
-    console.log("🔥 Opening Nazareth detail") 
-    setNazarethDetailOpen(true)
-      }
+    console.log("Clicked region:", regionKey)
+    
+    // Only open detail maps for regions that have detailed data
+    if (regionKey === "nazareth" || regionKey === "baysan") {
+      console.log(`Opening ${regionKey} detail`)
+      setActiveDetailRegion(regionKey)
+    }
   }
   
 
@@ -286,11 +267,9 @@ export default function PalestineHistoricMap() {
               <p className="text-gray-700 text-sm leading-relaxed">
                 {tooltip.region.blurb}
               </p>
-              {tooltip.region.title === "Nazareth" && (
                 <p className="text-green-600 text-xs mt-2 font-medium">
                   Click to explore villages in detail
                 </p>
-              )}
             </div>
             {/* Tooltip Arrow */}
             <div className="absolute top-full left-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-green-600"></div>
@@ -298,11 +277,16 @@ export default function PalestineHistoricMap() {
         )}
       </div>
 
-      {/* Nazareth Detail Map Modal */}
-      <NazarethDetailMap 
-        isOpen={nazarethDetailOpen} 
-        onClose={() => setNazarethDetailOpen(false)} 
-      />
+      {/* Region Detail Map Modal */}
+      {activeDetailRegion && (
+        <RegionDetailMap 
+          regionKey={activeDetailRegion}
+          isOpen={!!activeDetailRegion} 
+          onClose={() => setActiveDetailRegion(null)} 
+        />
+      )}
     </>
   )
 }
+
+  
