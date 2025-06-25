@@ -3,8 +3,11 @@
 export interface VillageData {
   id: string
   name: string
-  registrants: number
   description: string
+}
+
+export interface VillageWithRegistrants extends VillageData {
+  registrants: number
 }
 
 export interface RegionConfig {
@@ -42,7 +45,7 @@ export interface RegionMeta {
 }
 
 export interface TooltipData {
-  village: VillageData
+  village: VillageWithRegistrants
   x: number
   y: number
 }

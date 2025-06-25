@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
-import { RegionKey, VillageData, RegionConfig, TooltipData } from "../data/types"
+import { RegionKey, VillageData, VillageWithRegistrants, RegionConfig, TooltipData } from "../data/types"
+import { getRegionRegistrants } from "../data/registrants"
 
 interface RegionDetailMapProps {
   regionKey: RegionKey
@@ -13,7 +14,7 @@ interface RegionDetailMapProps {
 export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDetailMapProps) {
   const [hoveredVillage, setHoveredVillage] = useState<string | null>(null)
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
-  const [villageData, setVillageData] = useState<Record<string, VillageData>>({})
+  const [villageData, setVillageData] = useState<Record<string, VillageWithRegistrants>>({})
   const [regionConfig, setRegionConfig] = useState<RegionConfig | null>(null)
   const [svgContent, setSvgContent] = useState<string>("")
 
@@ -30,7 +31,19 @@ export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDe
         const villagesKey = `${regionKey.toUpperCase()}_VILLAGES`
         const configKey = `${regionKey.toUpperCase()}_CONFIG`
         
-        setVillageData(villagesModule[villagesKey] || {})
+        const staticVillageData: Record<string, VillageData> = villagesModule[villagesKey] || {}
+        const registrantCounts = getRegionRegistrants(regionKey)
+        
+        // Merge static data with registrant counts
+        const mergedData: Record<string, VillageWithRegistrants> = {}
+        Object.entries(staticVillageData).forEach(([id, village]) => {
+          mergedData[id] = {
+            ...village,
+            registrants: registrantCounts[id] || 0
+          }
+        })
+        
+        setVillageData(mergedData)
         setRegionConfig(configModule[configKey] || null)
 
         // Load SVG content
@@ -158,7 +171,7 @@ export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDe
         </div>
 
         {/* Map Container */}
-        <div className="p-8 bg-gradient-to-br from-green-50 via-white to-red-50">
+        <div className="p-8 bg-gradient-to-br from-green-50 via-white to-red-50 max-h-[70vh] overflow-y-auto">
           <div className="relative mx-auto" style={{ maxWidth: '600px' }}>
             {renderSVGWithInteractivity()}
           </div>
@@ -168,7 +181,7 @@ export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDe
             <h3 className="font-semibold text-gray-800 mb-3">
               Villages in {regionConfig?.title || 'Region'}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm max-h-40 overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm max-h-60 overflow-y-auto">
               {Object.values(villageData).map((village) => (
                 <div key={village.id} className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-400 rounded-full flex-shrink-0"></div>
