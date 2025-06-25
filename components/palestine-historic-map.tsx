@@ -58,12 +58,8 @@ export default function PalestineHistoricMap() {
 
   const handleRegionClick = (regionKey: RegionKey) => {
     console.log("Clicked region:", regionKey)
-    
-    // Only open detail maps for regions that have detailed data
-    if (regionKey === "nazareth" || regionKey === "baysan") {
-      console.log(`Opening ${regionKey} detail`)
-      setActiveDetailRegion(regionKey)
-    }
+    console.log(`Opening ${regionKey} detail`)
+    setActiveDetailRegion(regionKey)
   }
   
 
