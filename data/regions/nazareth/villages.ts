@@ -21,8 +21,8 @@ export const NAZARETH_VILLAGES: Record<string, VillageData> = {
     name: "al-Mujaydil",
     description: "A small agricultural village nestled in the hills, known for its terraced farmland and traditional Palestinian rural architecture."
   },
-  "indur": {
-    id: "indur",
+  "Indur": {
+    id: "Indur",
     name: "Indur",
     description: "A village with ancient roots, where residents were known for their expertise in traditional crafts and agriculture before 1948."
   }
