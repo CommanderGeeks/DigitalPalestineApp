@@ -163,21 +163,24 @@ export default function RegionDetailMap({ regionKey, isOpen, onClose }: RegionDe
             <X className="w-6 h-6" />
           </button>
           {regionConfig && (
-            <>
+            <div className="pr-16">
               <h2 className="text-3xl font-bold mb-2">{regionConfig.title}</h2>
-              <p className="text-green-100">{regionConfig.arabicName} - {regionConfig.description}</p>
-            </>
+              <p className="text-green-100 mb-4">{regionConfig.arabicName} - {regionConfig.description}</p>
+              <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                My village is not here
+              </button>
+            </div>
           )}
         </div>
 
         {/* Map Container */}
-        <div className="p-8 bg-gradient-to-br from-green-50 via-white to-red-50 max-h-[70vh] overflow-y-auto">
+        <div className="p-8 bg-gradient-to-br from-green-50 via-white to-red-50 max-h-[70vh] overflow-y-auto pb-20">
           <div className="relative mx-auto" style={{ maxWidth: '600px' }}>
             {renderSVGWithInteractivity()}
           </div>
 
           {/* Legend */}
-          <div className="mt-6 bg-white p-4 rounded-lg border border-green-200">
+          <div className="mt-6 mb-8 bg-white p-4 rounded-lg border border-green-200">
             <h3 className="font-semibold text-gray-800 mb-3">
               Villages in {regionConfig?.title || 'Region'}
             </h3>
